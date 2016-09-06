@@ -1,0 +1,89 @@
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.*;
+
+public class DrawOval extends JPanel{
+
+	private int d = 10;
+	
+	//can't draw anything on screen without graphics object
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
+		//prep our graphics object for drawing
+		g.fillOval(10, 10, d, d);
+	}
+	
+	public void setD(int newD){
+		d = (newD >= 0 ? newD : 10);
+		//if you have new diameter, you have to paint new circle
+		repaint();
+		//built in method that automatically calls paintcomponent method
+		//from same class. once you've painted it once, just call repaint
+		
+	}
+	
+	public Dimension getPreferredSize(){
+		//used by layout manager to determine preferred size
+		return new Dimension(200, 200);
+	}
+	
+	public Dimension getMinimumSize(){
+		return getPreferredSize();
+	}
+	
+	
+}
+public class TheWindow extends JFrame{
+	//JFrame is the window itself, title bar
+	//, scroll bar, etc.
+	//the panel in DrawOval goes into the frame
+	
+	private JSlider slider;
+	private DrawOval myPanel;
+	//what's going to sit inside of frame^^
+	
+	public TheWindow(){
+		//frame = window
+		super("The title");
+		myPanel = new DrawOval();
+		myPanel.setBackground(Color.ORANGE);
+		
+		slider = new JSlider(SwingConstants.HORIZONTAL, 0, 200, 10);
+		//1st parameter is how you want slider to appear
+		//horizontal, vertical
+		//2nd & 3rd parameter is min and max value of slider
+		slider.setMajorTickSpacing(10);
+		//set your ticks every 10 pixels
+		slider.setPaintTicks(true);
+		//actually paints ticks on the screen
+		
+		//listener is a tiny program that sits on slider so when you slide it it says its supposed to
+		//do something.. change diameter
+		//every object has a diff type of listener & diff type of event that registers
+		//this one is statechanged
+		
+		slider.addChangeListener(
+				new ChangeListener(){
+					public void stateChanged(ChangeEvent e){
+					//any time you move slider, an event occurs
+					//any time an event occurs.. a piece of code is going to run.. whatever is in here
+						myPanel.setD(slider.getValue());
+				}
+				}
+				);
+		add(slider, BorderLayout.SOUTH);
+		add(myPanel, BorderLayout.CENTER);
+	}
+
+}
+
+public class OvalProgram  {
+	public static void main(String[] args){
+		
+		TheWindow w = new TheWindow();
+		w.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		w.setSize(230,280);
+		w.setVisible(true);
+	}
+	}
+
